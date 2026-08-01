@@ -15,20 +15,14 @@ extract_address() {
 	echo "$1" | sed 's/.*<\(.*\)>/\1/'
 }
 
-get_date() {
-	date -u +'%a, %d %b %Y %H:%M:%S +0000'
-}
-
 panic() {
 	printf "\n  \033[1;31mERR\033[0m: ${1}\n\n"
 	exit 1
 }
 
-test -z "$SMTP_USER" && panic 'SMTP_USER not set!'
-test -z "$SMTP_PASS" && panic 'SMTP_PASS not set!'
-
-SMTP_HOST="${SMTP_HOST:-smtp.gmail.com}"
-SMTP_PORT=${SMTP_PORT:-465}
+print_ok() {
+	printf "\n  \033[1;32mOK\033[0m  ${1}\n\n"
+}
 
 while [ "$#" -gt 0 ]; do
 	case "$1" in
@@ -45,7 +39,7 @@ while [ "$#" -gt 0 ]; do
 			curl -fLsSo "$(command -v "$0")" \
 				'https://smail.angus.sh/install.sh' \
 				&& print_ok "\033[1m$($(command -v "$0") --version)\033[0m" \
-				|| print_err 'Upgrade failed!'
+				|| panic 'Upgrade failed!'
 			exit
 			;;
 		--to)
@@ -67,17 +61,17 @@ while [ "$#" -gt 0 ]; do
 	shift
 done
 
+test -z "$SMTP_USER" && panic 'SMTP_USER not set!'
+test -z "$SMTP_PASS" && panic 'SMTP_PASS not set!'
 test -z "$MAIL_BODY" && panic 'No message body!'
+
+SMTP_HOST="${SMTP_HOST:-smtp.gmail.com}"
+SMTP_PORT=${SMTP_PORT:-465}
 
 MAIL_FROM=${MAIL_FROM:-$SMTP_USER}
 MAIL_TO=${MAIL_TO:-$SMTP_USER}
 FROM_ADDRESS="$(extract_address "$MAIL_FROM")"
 TO_ADDRESS="$(extract_address "$MAIL_TO")"
-
-echo "HOST: ${SMTP_HOST}"
-echo "USER: ${SMTP_USER}"
-echo "FROM: ${MAIL_FROM}"
-echo "TO: ${MAIL_TO}"
 
 TMP_FILE=$(mktemp)
 
