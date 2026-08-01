@@ -42,6 +42,19 @@ while [ "$#" -gt 0 ]; do
 				|| panic 'Upgrade failed!'
 			exit
 			;;
+		--env)
+			shift
+			DOTENV_FILE="$1"
+			test -s "$DOTENV_FILE" && {
+				set -a
+				. "$DOTENV_FILE"
+				set +a
+			} || panic "Failed to load \"${DOTENV_FILE}\"."
+			;;
+		--from)
+			shift
+			MAIL_FROM="$1"
+			;;
 		--to)
 			shift
 			MAIL_TO="$1"
