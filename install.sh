@@ -102,8 +102,9 @@ EOF
 curl -sS --ssl-reqd \
      --url "smtps://${SMTP_HOST}:${SMTP_PORT}" \
      --user "${SMTP_USER}:${SMTP_PASS}" \
-     --mail-from "$SMTP_USER" \
+     --mail-from "$FROM_ADDRESS" \
      --mail-rcpt "$TO_ADDRESS" \
-     --upload-file "$TMP_FILE"
+     --upload-file "$TMP_FILE" \
+&& printf "\n  \033[1;32mSENT\033[0m\n\n"
 
-rm -v "$TMP_FILE"
+rm "$TMP_FILE"
