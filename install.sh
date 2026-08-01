@@ -83,26 +83,25 @@ SMTP_PORT=${SMTP_PORT:-465}
 
 MAIL_FROM=${MAIL_FROM:-$SMTP_USER}
 MAIL_TO=${MAIL_TO:-$SMTP_USER}
-FROM_ADDRESS="$(extract_address "$MAIL_FROM")"
+
 TO_ADDRESS="$(extract_address "$MAIL_TO")"
 
 TMP_FILE=$(mktemp)
 
 cat << EOF > ${TMP_FILE}
-From: ${MAIL_FROM:-$SMTP_USER}
-To: ${MAIL_TO:-$SMTP_USER}
+From: ${MAIL_FROM}
+To: ${MAIL_TO}
 Subject: ${MAIL_SUBJECT}
 Date: $(date -u +'%a, %d %b %Y %H:%M:%S +0000')
 MIME-Version: 1.0
 Content-Type: ${MIME_TYPE:-text/html}; charset=UTF-8
 
 ${MAIL_BODY}
-
 EOF
 
-curl -sS "smtps://${SMTP_HOST}:${SMTP_PORT}" \
-     -u "${SMTP_USER}:${SMTP_PASS}" \
-     --ssl-reqd \
+curl -sS --ssl-reqd \
+     --url "smtps://${SMTP_HOST}:${SMTP_PORT}" \
+     --user "${SMTP_USER}:${SMTP_PASS}" \
      --mail-from "$SMTP_USER" \
      --mail-rcpt "$TO_ADDRESS" \
      --upload-file "$TMP_FILE"
