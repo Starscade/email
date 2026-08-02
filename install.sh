@@ -30,6 +30,16 @@ rfc_2047() {
 	printf '?='
 }
 
+to_base64() {
+	CR="$(printf '\r')"
+
+	printf '%s' "$1" \
+	| base64 \
+	| tr -d '\n' \
+	| fold -w 76 \
+	| awk -v cr="$CR" '{print $0 cr}'
+}
+
 while [ "$#" -gt 0 ]; do
 	case "$1" in
 		--version)
@@ -80,13 +90,7 @@ while [ "$#" -gt 0 ]; do
 		--attach)
 			shift
 			test -s "$1" || panic 'No file!'
-			MAIL_ATTACHMENT_DATA=$(
-				cat "$1" \
-				| base64 \
-				| tr -d '\n' \
-				| fold -w 76 \
-				| sed 's/$/\r/'
-			)
+			MAIL_ATTACHMENT_DATA=$(to_base64 "$(cat "$1")")
 			MAIL_ATTACHMENT_MIME_TYPE=$(
 				file -b --mime-type "$1" 2>/dev/null \
 				|| echo "text/plain"
@@ -138,7 +142,7 @@ Content-Type: multipart/mixed; boundary="${MULTIPART_BOUNDARY}"
 Content-Type: text/html; charset=UTF-8
 Content-Transfer-Encoding: base64
 
-${BASE64_BODY}
+$(to_base64 "$MAIL_BODY")
 
 EOF
 
