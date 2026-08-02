@@ -70,6 +70,7 @@ while [ "$#" -gt 0 ]; do
 		--from)
 			shift
 			MAIL_FROM="$1"
+			shift
 			;;
 		--to)
 			shift
@@ -78,6 +79,7 @@ while [ "$#" -gt 0 ]; do
 		--subject)
 			shift
 			MAIL_SUBJECT="$1"
+			shift
 			;;
 		--body)
 			shift
@@ -86,6 +88,7 @@ while [ "$#" -gt 0 ]; do
 			else
 				MAIL_BODY="$1"
 			fi
+			shift
 			;;
 		--attach)
 			shift
