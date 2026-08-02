@@ -37,13 +37,7 @@ rfc_2047() {
 }
 
 to_base64() {
-	CR="$(printf '\r')"
-
-	printf '%s' "$1" \
-	| base64 \
-	| tr -d '\n' \
-	| fold -w 76 \
-	| awk -v cr="$CR" '{print $0 cr}'
+	printf '%s' "$1" | base64
 }
 
 while [ "$#" -gt 0 ]; do
