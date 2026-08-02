@@ -122,19 +122,13 @@ TO_ADDRESS="$(extract_address "$MAIL_TO")"
 TMP_FILE="/tmp/smail.$(date +%Y%m%d%H%M%S).eml"
 MULTIPART_BOUNDARY='U01BSUxfQk9VTkRBUlkK'
 
-BASE64_BODY=$(
-	printf '%s' "$MAIL_BODY" \
-	| base64 \
-	| tr -d '\n' \
-	| fold -w 76 \
-	| sed 's/$/\r/'
-)
+DATE_HEADER="$(LC_ALL=C date -u +'%a, %d %b %Y %H:%M:%S +0000')"
 
 cat << EOF > ${TMP_FILE}
 From: ${MAIL_FROM}
 To: ${MAIL_TO}
 Subject: ${MAIL_SUBJECT}
-Date: $(date -u +'%a, %d %b %Y %H:%M:%S +0000')
+Date: ${DATE_HEADER}
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="${MULTIPART_BOUNDARY}"
 
