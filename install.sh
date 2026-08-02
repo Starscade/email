@@ -99,11 +99,11 @@ while [ "$#" -gt 0 ]; do
 		--attach)
 			shift
 			test -s "$1" || panic 'No file!'
-			MAIL_ATTACHMENT_DATA=$(to_base64 "$(cat "$1")")
-			MAIL_ATTACHMENT_MIME_TYPE=$(
+			MAIL_ATTACHMENT_DATA="$(base64 "$1")"
+			MAIL_ATTACHMENT_MIME_TYPE="$(
 				file -b --mime-type "$1" 2>/dev/null \
 				|| echo "text/plain"
-			)
+			)"
 			MAIL_ATTACHMENT_NAME="$(basename "$1")"
 			shift
 			;;
