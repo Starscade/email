@@ -105,9 +105,12 @@ while [ "$#" -gt 0 ]; do
 				|| echo "text/plain"
 			)
 			MAIL_ATTACHMENT_NAME="$1"
+			shift
 			;;
 		--read)
+			shift
 			READ_MAIL=1
+			shift
 			;;
 		*)
 			panic "\033[1m${1}\033[0m is not a recognized argument."
