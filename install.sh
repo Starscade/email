@@ -4,7 +4,7 @@ test $(basename "$0") = 'install.sh' && {
 	INSTALL_DIR=~/.local/bin
 	test -n "$1" && test -d "$1" \
 		&& INSTALL_DIR="$1"
-	INSTALL_PATH="${INSTALL_DIR}/smail"
+	INSTALL_PATH="${INSTALL_DIR}/email"
 	mkdir -pv "$INSTALL_DIR" \
 	&& cp -iv "$0" "$INSTALL_PATH" \
 	&& chmod -v 0755 "$INSTALL_PATH"
@@ -43,7 +43,7 @@ to_base64() {
 while [ "$#" -gt 0 ]; do
 	case "$1" in
 		--version)
-			VERSION='v0.1.12 (main)'
+			VERSION='v0.1.0 (main)'
 			echo "$VERSION"
 			exit
 			;;
@@ -53,7 +53,7 @@ while [ "$#" -gt 0 ]; do
 			;;
 		--update)
 			curl -fLsSo "$(command -v "$0")" \
-				'https://smail.angus.sh/install.sh' \
+				'https://email.angus.sh/install.sh' \
 				&& print_ok "\033[1m$($(command -v "$0") --version)\033[0m" \
 				|| panic 'Upgrade failed!'
 			exit
@@ -97,11 +97,13 @@ while [ "$#" -gt 0 ]; do
 			)
 			MAIL_ATTACHMENT_NAME="$1"
 			;;
+		--read)
+			READ_MAIL=1
+			;;
 		*)
 			panic "\033[1m${1}\033[0m is not a recognized argument."
 			;;
 	esac
-	shift
 done
 
 test -z "$SMTP_USER" && panic 'SMTP_USER not set!'
@@ -119,7 +121,7 @@ MAIL_TO=${MAIL_TO:-$MAIL_FROM}
 FROM_ADDRESS="$(extract_address "$MAIL_FROM")"
 TO_ADDRESS="$(extract_address "$MAIL_TO")"
 
-TMP_FILE="/tmp/smail.$(date +%Y%m%d%H%M%S).eml"
+TMP_FILE="/tmp/email.$(date +%Y%m%d%H%M%S).eml"
 MULTIPART_BOUNDARY='U01BSUxfQk9VTkRBUlkK'
 
 DATE_HEADER="$(LC_ALL=C date -u +'%a, %d %b %Y %H:%M:%S +0000')"
