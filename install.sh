@@ -127,6 +127,8 @@ DISPLAY_TO="$(rfc_2047 "$MAIL_TO")"
 DISPLAY_SUBJECT="$(rfc_2047 "$MAIL_SUBJECT")"
 
 TMP_FILE="/tmp/email.$(date +%Y%m%d%H%M%S).eml"
+trap 'rm -fv "$TMP_FILE"' EXIT INT TERM
+
 MULTIPART_BOUNDARY='U01BSUxfQk9VTkRBUlkK'
 
 DATE_HEADER="$(LC_ALL=C date -u +'%a, %d %b %Y %H:%M:%S +0000')"
