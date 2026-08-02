@@ -92,11 +92,21 @@ SMTP_HOST="${SMTP_HOST:-smtp.gmail.com}"
 SMTP_PORT=${SMTP_PORT:-465}
 
 MAIL_FROM=${MAIL_FROM:-$SMTP_USER}
-MAIL_TO=${MAIL_TO:-$SMTP_USER}
+MAIL_TO=${MAIL_TO:-$MAIL_FROM}
 
+FROM_ADDRESS="$(extract_address "$MAIL_FROM")"
 TO_ADDRESS="$(extract_address "$MAIL_TO")"
 
-TMP_FILE=$(mktemp)
+TMP_FILE="/tmp/smail.$(date +%Y%m%d%H%M%S).eml"
+MULTIPART_BOUNDARY='U01BSUxfQk9VTkRBUlkK'
+
+BASE64_BODY=$(
+	printf '%s' "$MAIL_BODY" \
+	| base64 \
+	| tr -d '\n' \
+	| fold -w 76 \
+	| sed 's/$/\r/'
+)
 
 cat << EOF > ${TMP_FILE}
 From: ${MAIL_FROM}
@@ -104,9 +114,15 @@ To: ${MAIL_TO}
 Subject: ${MAIL_SUBJECT}
 Date: $(date -u +'%a, %d %b %Y %H:%M:%S +0000')
 MIME-Version: 1.0
-Content-Type: ${MIME_TYPE:-text/html}; charset=UTF-8
+Content-Type: multipart/mixed; boundary="${MULTIPART_BOUNDARY}"
 
-${MAIL_BODY}
+--${MULTIPART_BOUNDARY}
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: base64
+
+${BASE64_BODY}
+
+--${MULTIPART_BOUNDARY}--
 EOF
 
 curl -sS --ssl-reqd \
