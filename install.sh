@@ -104,7 +104,7 @@ while [ "$#" -gt 0 ]; do
 				file -b --mime-type "$1" 2>/dev/null \
 				|| echo "text/plain"
 			)
-			MAIL_ATTACHMENT_NAME="$1"
+			MAIL_ATTACHMENT_NAME="$(basename "$1")"
 			shift
 			;;
 		--read)
