@@ -156,6 +156,10 @@ EOF
 
 printf '%s' "--${MULTIPART_BOUNDARY}--" >> "${TMP_FILE}"
 
+test -n "$DEBUG" && {
+	cat "$TMP_FILE"
+}
+
 curl -sS --ssl-reqd \
      --url "smtps://${SMTP_HOST}:${SMTP_PORT}" \
      --user "${SMTP_USER}:${SMTP_PASS}" \
