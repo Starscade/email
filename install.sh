@@ -71,7 +71,11 @@ while [ "$#" -gt 0 ]; do
 			;;
 		--body)
 			shift
-			MAIL_BODY="$1"
+			if test -s "$1"; then
+				MAIL_BODY="$(cat "$1")"
+			else
+				MAIL_BODY="$1"
+			fi
 			;;
 		*)
 			panic "\033[1m${1}\033[0m is not a recognized argument."
