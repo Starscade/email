@@ -15,6 +15,10 @@ extract_address() {
 	echo "$1" | sed 's/.*<\(.*\)>/\1/'
 }
 
+extract_displayname() {
+	echo "$1" | sed 's/\(.*\) <.*>/\1/'
+}
+
 panic() {
 	printf "\n  \033[1;31mERR\033[0m: ${1}\n\n"
 	exit 1
@@ -25,9 +29,11 @@ print_ok() {
 }
 
 rfc_2047() {
-	printf '=?UTF-8?Q?'
-	printf '%s' "$1" | od -An -v -tx1 | tr ' \n' '=' | tr '[:lower:]' '[:upper:]'
-	printf '?='
+	DISPLAY_NAME="$(extract_displayname "$1")"
+	ENCODED="$(printf '%s' "$DISPLAY_NAME" \
+		| base64 | tr -d '\n'
+	)"
+	printf '=?UTF-8?B?%s?=' "$ENCODED"
 }
 
 to_base64() {
@@ -124,15 +130,19 @@ MAIL_TO=${MAIL_TO:-$MAIL_FROM}
 FROM_ADDRESS="$(extract_address "$MAIL_FROM")"
 TO_ADDRESS="$(extract_address "$MAIL_TO")"
 
+DISPLAY_FROM="$(rfc_2047 "$MAIL_FROM")"
+DISPLAY_TO="$(rfc_2047 "$MAIL_TO")"
+DISPLAY_SUBJECT="$(rfc_2047 "$MAIL_SUBJECT")"
+
 TMP_FILE="/tmp/email.$(date +%Y%m%d%H%M%S).eml"
 MULTIPART_BOUNDARY='U01BSUxfQk9VTkRBUlkK'
 
 DATE_HEADER="$(LC_ALL=C date -u +'%a, %d %b %Y %H:%M:%S +0000')"
 
 cat << EOF > ${TMP_FILE}
-From: ${MAIL_FROM}
-To: ${MAIL_TO}
-Subject: ${MAIL_SUBJECT}
+From: ${DISPLAY_FROM} <${FROM_ADDRESS}>
+To: ${DISPLAY_TO} <${TO_ADDRESS}>
+Subject: ${DISPLAY_SUBJECT}
 Date: ${DATE_HEADER}
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary="${MULTIPART_BOUNDARY}"
