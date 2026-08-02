@@ -24,6 +24,12 @@ print_ok() {
 	printf "\n  \033[1;32mOK\033[0m  ${1}\n\n"
 }
 
+rfc_2047() {
+	printf '=?UTF-8?Q?'
+	printf '%s' "$1" | od -An -v -tx1 | tr ' \n' '=' | tr '[:lower:]' '[:upper:]'
+	printf '?='
+}
+
 while [ "$#" -gt 0 ]; do
 	case "$1" in
 		--version)
