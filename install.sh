@@ -59,52 +59,47 @@ while [ "$#" -gt 0 ]; do
 			exit
 			;;
 		--env)
-			shift
-			DOTENV_FILE="$1"
+			DOTENV_FILE="$2"
 			test -s "$DOTENV_FILE" && {
 				set -a
 				. "$DOTENV_FILE"
 				set +a
 			} || panic "Failed to load \"${DOTENV_FILE}\"."
+			shift 2
 			;;
 		--from)
-			shift
-			MAIL_FROM="$1"
-			shift
+			MAIL_FROM="$2"
+			shift 2
 			;;
 		--to)
 			shift
 			MAIL_TO="$1"
 			;;
 		--subject)
-			shift
-			MAIL_SUBJECT="$1"
-			shift
+			MAIL_SUBJECT="$2"
+			shift 2
 			;;
 		--body)
-			shift
-			if test -s "$1"; then
-				MAIL_BODY="$(cat "$1")"
+			if test -s "$2"; then
+				MAIL_BODY="$(cat "$2")"
 			else
-				MAIL_BODY="$1"
+				MAIL_BODY="$2"
 			fi
-			shift
+			shift 2
 			;;
 		--attach)
-			shift
-			test -s "$1" || panic 'No file!'
-			MAIL_ATTACHMENT_DATA="$(base64 "$1")"
+			test -s "$2" || panic 'No file!'
+			MAIL_ATTACHMENT_DATA="$(base64 "$2")"
 			MAIL_ATTACHMENT_MIME_TYPE="$(
-				file -b --mime-type "$1" 2>/dev/null \
+				file -b --mime-type "$2" 2>/dev/null \
 				|| echo "text/plain"
 			)"
-			MAIL_ATTACHMENT_NAME="$(basename "$1")"
-			shift
+			MAIL_ATTACHMENT_NAME="$(basename "$2")"
+			shift 2
 			;;
 		--read)
-			shift
 			READ_MAIL=1
-			shift
+			shift 2
 			;;
 		*)
 			panic "\033[1m${1}\033[0m is not a recognized argument."
