@@ -167,10 +167,20 @@ test -n "$DEBUG" && {
 	cat "$TMP_FILE"
 }
 
-curl -sS --ssl-reqd \
-     --url "smtps://${SMTP_HOST}:${SMTP_PORT}" \
-     --user "${SMTP_USER}:${SMTP_PASS}" \
-     --mail-from "$FROM_ADDRESS" \
-     --mail-rcpt "$TO_ADDRESS" \
-     --upload-file "$TMP_FILE" \
-&& printf "\n  \033[1;32mSENT\033[0m\n\n"
+if test "$SMTP_PORT" -eq 465; then
+	curl -sS --ssl-reqd \
+			 --url "smtps://${SMTP_HOST}:${SMTP_PORT}" \
+			 --user "${SMTP_USER}:${SMTP_PASS}" \
+			 --mail-from "$FROM_ADDRESS" \
+			 --mail-rcpt "$TO_ADDRESS" \
+			 --upload-file "$TMP_FILE" \
+	&& printf "\n  \033[1;32mSENT\033[0m\n\n"
+else
+	curl -sS --ssl \
+			 --url "smtp://${SMTP_HOST}:${SMTP_PORT}" \
+			 --user "${SMTP_USER}:${SMTP_PASS}" \
+			 --mail-from "$FROM_ADDRESS" \
+			 --mail-rcpt "$TO_ADDRESS" \
+			 --upload-file "$TMP_FILE" \
+	&& printf "\n  \033[1;32mSENT\033[0m\n\n"
+fi
