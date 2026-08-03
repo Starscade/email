@@ -72,8 +72,8 @@ while [ "$#" -gt 0 ]; do
 			shift 2
 			;;
 		--to)
-			shift
-			MAIL_TO="$1"
+			MAIL_TO="$2"
+			shift 2
 			;;
 		--subject)
 			MAIL_SUBJECT="$2"
