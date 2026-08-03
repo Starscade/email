@@ -2,7 +2,8 @@ One-liner email script.
 
 ###### INSTALLATION
 ```
-curl -fLsSo ~/.local/bin/email 'https://email.angus.sh/install.sh'
+curl -fLsSo ~/.local/bin/email https://email.angus.sh/install.sh
+chmod +x ~/.local/bin/email
 ```
 
 ###### USAGE
