@@ -5,8 +5,8 @@ test $(basename "$0") = 'install.sh' && {
 	test -n "$1" && test -d "$1" \
 		&& INSTALL_DIR="$1"
 	INSTALL_PATH="${INSTALL_DIR}/email"
-	mkdir -pv "$INSTALL_DIR" \
-	&& cp -iv "$0" "$INSTALL_PATH" \
+	mkdir -p "$INSTALL_DIR" \
+	&& cp -i "$0" "$INSTALL_PATH" \
 	&& chmod -v 0755 "$INSTALL_PATH"
 	exit
 }
@@ -127,9 +127,9 @@ DISPLAY_TO="$(rfc_2047 "$MAIL_TO")"
 DISPLAY_SUBJECT="$(rfc_2047 "$MAIL_SUBJECT")"
 
 TMP_FILE="/tmp/email.$(date +%Y%m%d%H%M%S).eml"
-trap 'rm -fv "$TMP_FILE"' EXIT INT TERM
+trap 'rm -f "$TMP_FILE"' EXIT INT TERM
 
-MULTIPART_BOUNDARY='U01BSUxfQk9VTkRBUlkK'
+MULTIPART_BOUNDARY='FZXVWxacmNHRlJNbU01VUZGdlBRbz0K'
 
 DATE_HEADER="$(LC_ALL=C date -u +'%a, %d %b %Y %H:%M:%S +0000')"
 
@@ -174,5 +174,3 @@ curl -sS --ssl-reqd \
      --mail-rcpt "$TO_ADDRESS" \
      --upload-file "$TMP_FILE" \
 && printf "\n  \033[1;32mSENT\033[0m\n\n"
-
-rm "$TMP_FILE"
