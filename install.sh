@@ -11,6 +11,10 @@ test $(basename "$0") = 'install.sh' && {
 	exit
 }
 
+_print() {
+	printf "\n \033[1;${2}m${1}\033[0m${3}\n\n"
+}
+
 extract_address() {
 	echo "$1" | sed 's/.*<\(.*\)>/\1/'
 }
@@ -20,12 +24,16 @@ extract_displayname() {
 }
 
 panic() {
-	printf "\n \033[1;31mERR\033[0m: ${1}\n\n"
+	_print ERR 31 ": ${1}"
 	exit 1
 }
 
 print_ok() {
-	printf "\n \033[1;32mOK\033[0m  ${1}\n\n"
+	_print OK 32 "  ${1}"
+}
+
+print_sent() {
+	_print SENT 32
 }
 
 rfc_2047() {
@@ -174,7 +182,7 @@ if test "$SMTP_PORT" -eq 465; then
 			 --mail-from "$FROM_ADDRESS" \
 			 --mail-rcpt "$TO_ADDRESS" \
 			 --upload-file "$TMP_FILE" \
-	&& printf "\n  \033[1;32mSENT\033[0m\n\n"
+	&& print_sent
 else
 	curl -sS --ssl \
 			 --url "smtp://${SMTP_HOST}:${SMTP_PORT}" \
@@ -182,5 +190,5 @@ else
 			 --mail-from "$FROM_ADDRESS" \
 			 --mail-rcpt "$TO_ADDRESS" \
 			 --upload-file "$TMP_FILE" \
-	&& printf "\n  \033[1;32mSENT\033[0m\n\n"
+	&& print_sent
 fi
