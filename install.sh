@@ -20,7 +20,7 @@ extract_displayname() {
 }
 
 panic() {
-	printf "\n  \033[1;31mERR\033[0m: ${1}\n\n"
+	printf "\n \033[1;31mERR\033[0m: ${1}\n\n"
 	exit 1
 }
 
