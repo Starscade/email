@@ -148,15 +148,15 @@ DISPLAY_TO="$(rfc_2047 "$MAIL_TO") "
 DISPLAY_SUBJECT="$(rfc_2047 "$MAIL_SUBJECT")"
 
 TMP_FILE="/tmp/${CMD_NAME}.$(date +%Y%m%d%H%M%S).eml"
-trap 'rm -f "$TMP_FILE"' EXIT INT TERM
+trap '_trap "$TMP_FILE"' EXIT INT TERM
 
 MULTIPART_BOUNDARY='FZXVWxacmNHRlJNbU01VUZGdlBRbz0K'
 
 DATE_HEADER="$(LC_ALL=C date -u +'%a, %d %b %Y %H:%M:%S +0000')"
 
 cat << EOF > ${TMP_FILE}
-From: ${DISPLAY_FROM}<${FROM_ADDRESS:-$SMTP_USER}>
-To: ${DISPLAY_TO}<${TO_ADDRESS:-$SMTP_USER}>
+From: ${DISPLAY_FROM}<${FROM_ADDRESS}>
+To: ${DISPLAY_TO}<${TO_ADDRESS}>
 Subject: ${DISPLAY_SUBJECT}
 Date: ${DATE_HEADER}
 MIME-Version: 1.0
@@ -186,7 +186,7 @@ printf '%s' "--${MULTIPART_BOUNDARY}--" >> "${TMP_FILE}"
 
 test -n "$DEBUG" && {
 	print_log \
-		"${FROM_ADDRESS:-$SMTP_USER} (FROM)\n      ${TO_ADDRESS:-$SMTP_USER} (TO)"
+		"${MAIL_FROM} (FROM)\n      ${MAIL_TO} (TO)"
 	cat "$TMP_FILE"
 }
 
