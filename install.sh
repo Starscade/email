@@ -118,7 +118,7 @@ while [ "$#" -gt 0 ]; do
 			;;
 		--read)
 			READ_MAIL=1
-			shift 2
+			shift
 			;;
 		*)
 			panic "\033[1m${1}\033[0m is not a recognized argument."
