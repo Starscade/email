@@ -1,10 +1,12 @@
 #!/bin/sh
 
+CMD_NAME=email
+
 test "${0##*/}" = 'install.sh' && {
 	INSTALL_DIR="${HOME}/.local/bin"
 	test -n "$1" && test -d "$1" \
 		&& INSTALL_DIR="$1"
-	INSTALL_PATH="${INSTALL_DIR}/email"
+	INSTALL_PATH="${INSTALL_DIR}/${CMD_NAME}"
 	mkdir -p "$INSTALL_DIR" \
 	&& cp -i "$0" "$INSTALL_PATH" \
 	&& chmod -v 0755 "$INSTALL_PATH"
@@ -62,7 +64,7 @@ while [ "$#" -gt 0 ]; do
 			;;
 		--update)
 			curl -fLsSo "$(command -v "$0")" \
-				'https://email.angus.sh/install.sh' \
+				"https://${CMD_NAME}.angus.sh/install.sh" \
 				&& print_ok "\033[1m$($(command -v "$0") --version)\033[0m" \
 				|| panic 'Upgrade failed!'
 			exit
@@ -137,7 +139,7 @@ DISPLAY_FROM="$(rfc_2047 "$MAIL_FROM")"
 DISPLAY_TO="$(rfc_2047 "$MAIL_TO")"
 DISPLAY_SUBJECT="$(rfc_2047 "$MAIL_SUBJECT")"
 
-TMP_FILE="/tmp/email.$(date +%Y%m%d%H%M%S).eml"
+TMP_FILE="/tmp/${CMD_NAME}.$(date +%Y%m%d%H%M%S).eml"
 trap 'rm -f "$TMP_FILE"' EXIT INT TERM
 
 MULTIPART_BOUNDARY='FZXVWxacmNHRlJNbU01VUZGdlBRbz0K'
