@@ -17,12 +17,16 @@ _print() {
 	printf "\n \033[1;${2}m${1}\033[0m${3}\n\n"
 }
 
+_trap() {
+	rm -f "$1"
+}
+
 extract_address() {
-	echo "$1" | sed -n '/.*<\(.*\)>/p'
+	echo "$1" | sed 's/.*<\(.*\)>/\1/'
 }
 
 extract_displayname() {
-	echo "$1" | sed -n '/\(.*\) <.*>/p'
+	echo "$1" | sed 's/\(.*\) <.*>/\1/'
 }
 
 panic() {
