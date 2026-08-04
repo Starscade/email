@@ -18,11 +18,11 @@ _print() {
 }
 
 extract_address() {
-	echo "$1" | sed 's/.*<\(.*\)>/\1/'
+	echo "$1" | sed -n '/.*<\(.*\)>/p'
 }
 
 extract_displayname() {
-	echo "$1" | sed 's/\(.*\) <.*>/\1/'
+	echo "$1" | sed -n '/\(.*\) <.*>/p'
 }
 
 panic() {
@@ -133,14 +133,14 @@ test -z "$MAIL_BODY" && test -z "$MAIL_ATTACHMENT_DATA" \
 SMTP_HOST="${SMTP_HOST:-smtp.gmail.com}"
 SMTP_PORT=${SMTP_PORT:-465}
 
-MAIL_FROM=${MAIL_FROM:-$SMTP_USER}
-MAIL_TO=${MAIL_TO:-$MAIL_FROM}
+MAIL_FROM=${MAIL_FROM}
+MAIL_TO=${MAIL_TO}
 
 FROM_ADDRESS="$(extract_address "$MAIL_FROM")"
 TO_ADDRESS="$(extract_address "$MAIL_TO")"
 
-DISPLAY_FROM="$(rfc_2047 "$MAIL_FROM")"
-DISPLAY_TO="$(rfc_2047 "$MAIL_TO")"
+DISPLAY_FROM="$(rfc_2047 "$MAIL_FROM") "
+DISPLAY_TO="$(rfc_2047 "$MAIL_TO") "
 DISPLAY_SUBJECT="$(rfc_2047 "$MAIL_SUBJECT")"
 
 TMP_FILE="/tmp/${CMD_NAME}.$(date +%Y%m%d%H%M%S).eml"
@@ -151,8 +151,8 @@ MULTIPART_BOUNDARY='FZXVWxacmNHRlJNbU01VUZGdlBRbz0K'
 DATE_HEADER="$(LC_ALL=C date -u +'%a, %d %b %Y %H:%M:%S +0000')"
 
 cat << EOF > ${TMP_FILE}
-From: ${DISPLAY_FROM} <${FROM_ADDRESS}>
-To: ${DISPLAY_TO} <${TO_ADDRESS}>
+From: ${DISPLAY_FROM}<${FROM_ADDRESS:-$SMTP_USER}>
+To: ${DISPLAY_TO}<${TO_ADDRESS:-$SMTP_USER}>
 Subject: ${DISPLAY_SUBJECT}
 Date: ${DATE_HEADER}
 MIME-Version: 1.0
@@ -190,16 +190,16 @@ if test "$SMTP_PORT" -eq 465; then
 	curl -sS --ssl-reqd \
 			 --url "smtps://${SMTP_HOST}:${SMTP_PORT}" \
 			 --user "${SMTP_USER}:${SMTP_PASS}" \
-			 --mail-from "$FROM_ADDRESS" \
-			 --mail-rcpt "$TO_ADDRESS" \
+			 --mail-from "${FROM_ADDRESS:-$SMTP_USER}" \
+			 --mail-rcpt "${TO_ADDRESS:-$SMTP_USER}" \
 			 --upload-file "$TMP_FILE" \
 	&& print_sent
 else
 	curl -sS --ssl \
 			 --url "smtp://${SMTP_HOST}:${SMTP_PORT}" \
 			 --user "${SMTP_USER}:${SMTP_PASS}" \
-			 --mail-from "$FROM_ADDRESS" \
-			 --mail-rcpt "$TO_ADDRESS" \
+			 --mail-from "${FROM_ADDRESS:-$SMTP_USER}" \
+			 --mail-rcpt "${TO_ADDRESS:-$SMTP_USER}" \
 			 --upload-file "$TMP_FILE" \
 	&& print_sent
 fi
