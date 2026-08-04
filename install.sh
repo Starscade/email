@@ -38,6 +38,7 @@ print_sent() {
 
 rfc_2047() {
 	DISPLAY_NAME="$(extract_displayname "$1")"
+	test -z "$DISPLAY_NAME" && return
 	ENCODED="$(printf '%s' "$DISPLAY_NAME" \
 		| base64 | tr -d '\n'
 	)"
