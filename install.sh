@@ -30,6 +30,10 @@ panic() {
 	exit 1
 }
 
+print_log() {
+	_print LOG 34 ": ${1}"
+}
+
 print_ok() {
 	_print OK 32 "  ${1}"
 }
@@ -177,6 +181,8 @@ EOF
 printf '%s' "--${MULTIPART_BOUNDARY}--" >> "${TMP_FILE}"
 
 test -n "$DEBUG" && {
+	print_log \
+		"${FROM_ADDRESS:-$SMTP_USER} (FROM)\n      ${TO_ADDRESS:-$SMTP_USER} (TO)"
 	cat "$TMP_FILE"
 }
 
