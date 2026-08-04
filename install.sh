@@ -62,7 +62,7 @@ to_base64() {
 while [ "$#" -gt 0 ]; do
 	case "$1" in
 		--version)
-			VERSION='v0.1.39 (main) [e2351b2]'
+			VERSION='v0.1.45 (main) [339038c]'
 			printf '%s\n' "$VERSION"
 			exit
 			;;
