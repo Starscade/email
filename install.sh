@@ -119,6 +119,8 @@ done
 test -z "$SMTP_USER" && panic 'SMTP_USER not set!'
 test -z "$SMTP_PASS" && panic 'SMTP_PASS not set!'
 
+test -t 0 || MAIL_BODY="${MAIL_BODY}$(cat)"
+
 test -z "$MAIL_BODY" && test -z "$MAIL_ATTACHMENT_DATA" \
 	&& panic 'No message content!'
 
