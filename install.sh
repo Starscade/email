@@ -1,7 +1,9 @@
 #!/bin/sh
 
-test $(basename "$0") = 'install.sh' && {
-	INSTALL_DIR=~/.local/bin
+BASENAME="${0##*/}"
+
+test "$BASENAME" = 'install.sh' && {
+	INSTALL_DIR="${HOME}/.local/bin"
 	test -n "$1" && test -d "$1" \
 		&& INSTALL_DIR="$1"
 	INSTALL_PATH="${INSTALL_DIR}/email"
@@ -103,7 +105,7 @@ while [ "$#" -gt 0 ]; do
 				file -b --mime-type "$2" 2>/dev/null \
 				|| echo "text/plain"
 			)"
-			MAIL_ATTACHMENT_NAME="$(basename "$2")"
+			MAIL_ATTACHMENT_NAME="${2##*/}"
 			shift 2
 			;;
 		--read)
