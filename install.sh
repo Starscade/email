@@ -1,8 +1,6 @@
 #!/bin/sh
 
-BASENAME="${0##*/}"
-
-test "$BASENAME" = 'install.sh' && {
+test "${0##*/}" = 'install.sh' && {
 	INSTALL_DIR="${HOME}/.local/bin"
 	test -n "$1" && test -d "$1" \
 		&& INSTALL_DIR="$1"
