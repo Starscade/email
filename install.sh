@@ -54,7 +54,7 @@ to_base64() {
 while [ "$#" -gt 0 ]; do
 	case "$1" in
 		--version)
-			VERSION='v0.1.33 (main)'
+			VERSION='v0.1.39 (main) [e2351b2]'
 			echo "$VERSION"
 			exit
 			;;
