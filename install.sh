@@ -77,6 +77,10 @@ while [ "$#" -gt 0 ]; do
 				|| panic 'Upgrade failed!'
 			exit
 			;;
+		--help)
+			curl -LsS "https://${CMD_NAME}.angus.sh/README.md" 2>/dev/null
+			exit
+			;;
 		--env)
 			DOTENV_FILE="$2"
 			test -s "$DOTENV_FILE" && {
