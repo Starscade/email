@@ -141,8 +141,8 @@ test -z "$MAIL_BODY" && test -z "$MAIL_ATTACHMENT_DATA" \
 SMTP_HOST="${SMTP_HOST:-smtp.gmail.com}"
 SMTP_PORT=${SMTP_PORT:-465}
 
-MAIL_FROM=${MAIL_FROM}
-MAIL_TO=${MAIL_TO}
+MAIL_FROM=${MAIL_FROM:-$SMTP_USER}
+MAIL_TO=${MAIL_TO:-$SMTP_USER}
 
 FROM_ADDRESS="$(extract_address "$MAIL_FROM")"
 TO_ADDRESS="$(extract_address "$MAIL_TO")"
