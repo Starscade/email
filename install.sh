@@ -170,7 +170,7 @@ Content-Type: multipart/mixed; boundary="${MULTIPART_BOUNDARY}"
 Content-Type: text/html; charset=UTF-8
 Content-Transfer-Encoding: base64
 
-$(to_base64 "$MAIL_BODY")
+$(to_base64 "<div>$MAIL_BODY</div>")
 
 EOF
 
